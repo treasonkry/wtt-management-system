@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wtt.demo.mapper.EquipmentMapper">
+    <!-- 查询 -->
+    <select id="findAll" resultType="com.wtt.demo.pojo.Equipment">
+        SELECT player_name, blade, forehand_rubber, backhand_rubber
+        FROM equipment
+    </select>
+    
+    <select id="selectByPlayerName" resultType="com.wtt.demo.pojo.Equipment">
+        SELECT player_name, blade, forehand_rubber, backhand_rubber
+        FROM equipment
+        WHERE player_name = #{playerName}
+    </select>
+    
+    <select id="selectTotalCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM equipment
+    </select>
+    
+    <!-- 增加 -->
+    <insert id="insert">
+        INSERT INTO equipment (player_name, blade, forehand_rubber, backhand_rubber)
+        VALUES (#{playerName}, #{blade}, #{forehandRubber}, #{backhandRubber})
+    </insert>
+    
+    <!-- 删除 -->
+    <delete id="deleteByPlayerName">
+        DELETE FROM equipment WHERE player_name = #{playerName}
+    </delete>
+    
+    <!-- 修改 -->
+    <update id="update">
+        UPDATE equipment
+        SET blade = #{blade}, forehand_rubber = #{forehandRubber}, backhand_rubber = #{backhandRubber}
+        WHERE player_name = #{playerName}
+    </update>
+</mapper>

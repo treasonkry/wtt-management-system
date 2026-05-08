@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wtt.demo.mapper.UserActionLogMapper">
+    <resultMap id="UserActionLogResultMap" type="com.wtt.demo.pojo.UserActionLog">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="userType" column="user_type"/>
+        <result property="actionType" column="action_type"/>
+        <result property="module" column="module"/>
+        <result property="description" column="description"/>
+        <result property="requestUrl" column="request_url"/>
+        <result property="requestMethod" column="request_method"/>
+        <result property="ipAddress" column="ip_address"/>
+        <result property="userAgent" column="user_agent"/>
+        <result property="responseTime" column="response_time"/>
+        <result property="statusCode" column="status_code"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user_action_log (
+            username, user_type, action_type, module, description,
+            request_url, request_method, ip_address, user_agent,
+            response_time, status_code, create_time
+        ) VALUES (
+            #{username}, #{userType}, #{actionType}, #{module}, #{description},
+            #{requestUrl}, #{requestMethod}, #{ipAddress}, #{userAgent},
+            #{responseTime}, #{statusCode}, #{createTime}
+        )
+    </insert>
+
+    <select id="findAll" resultMap="UserActionLogResultMap">
+        SELECT * FROM user_action_log ORDER BY create_time DESC
+    </select>
+
+    <select id="selectById" resultMap="UserActionLogResultMap">
+        SELECT * FROM user_action_log WHERE id = #{id}
+    </select>
+
+    <select id="selectByUsername" resultMap="UserActionLogResultMap">
+        SELECT * FROM user_action_log WHERE username = #{username} ORDER BY create_time DESC
+    </select>
+
+    <select id="selectByModule" resultMap="UserActionLogResultMap">
+        SELECT * FROM user_action_log WHERE module = #{module} ORDER BY create_time DESC
+    </select>
+
+    <select id="selectByActionType" resultMap="UserActionLogResultMap">
+        SELECT * FROM user_action_log WHERE action_type = #{actionType} ORDER BY create_time DESC
+    </select>
+
+    <delete id="deleteById">
+        DELETE FROM user_action_log WHERE id = #{id}
+    </delete>
+
+    <select id="selectTotalCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM user_action_log
+    </select>
+</mapper>

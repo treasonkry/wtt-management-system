@@ -1,0 +1,51 @@
+# Maven
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# IDE
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+*.class
+*.jar
+!.gitkeep
+
+# Spring
+*.factorypath
+.project
+.settings
+.sts4-cache
+
+# Node
+node_modules/
+dist/
+wtt-frontend/dist/
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp
+*.tmp
+*.bak
+*.swp
+
+# Python (for future ai-service)
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+.venv
+env/
+venv/
+*.egg-info/
+dist/
+build/

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wtt.demo.mapper.PlayerMapper">
+    <select id="selectByName" resultType="com.wtt.demo.pojo.Player">
+        SELECT id, name, phone, username, password, points
+        FROM player
+        WHERE name = #{name}
+    </select>
+    <select id="selectTotalCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM player
+    </select>
+    <select id="selectByUsernameAndPassword" resultType="com.wtt.demo.pojo.Player">
+        SELECT id, name, phone, username, password, points
+        FROM player
+        WHERE username = #{username} AND password = #{password}
+    </select>
+    <select id="findAll" resultType="com.wtt.demo.pojo.Player">
+        SELECT id, name, phone, username, password, points
+        FROM player
+    </select>
+    <select id="selectById" resultType="com.wtt.demo.pojo.Player">
+        SELECT id, name, phone, username, password, points
+        FROM player
+        WHERE id = #{id}
+    </select>
+    
+    <insert id="insert">
+        INSERT INTO player (name, phone, username, password, points)
+        VALUES (#{name}, #{phone}, #{username}, #{password}, #{points})
+    </insert>
+    
+    <delete id="deleteById">
+        DELETE FROM player WHERE id = #{id}
+    </delete>
+    
+    <update id="update">
+        UPDATE player
+        SET name = #{name}, phone = #{phone}, username = #{username}, password = #{password}, points = #{points}
+        WHERE id = #{id}
+    </update>
+</mapper>

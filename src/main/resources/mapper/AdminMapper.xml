@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wtt.demo.mapper.AdminMapper">
+    <select id="selectByNameAndPassword" resultType="com.wtt.demo.pojo.Admin">
+        SELECT id, username, password
+        FROM admin
+        WHERE username = #{username} AND password = #{password}
+    </select>
+    
+    <select id="selectTotalCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM admin
+    </select>
+</mapper>

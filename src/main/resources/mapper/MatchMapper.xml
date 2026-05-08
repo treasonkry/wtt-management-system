@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wtt.demo.mapper.MatchMapper">
+    <select id="findAll" resultType="com.wtt.demo.pojo.Match">
+        SELECT id, player1_id AS player1Id, player2_id AS player2Id,
+               player1_name AS player1Name, player2_name AS player2Name,
+               large_score AS largeScore, small_scores AS smallScores,
+               winner_id AS winnerId, winner_name AS winnerName, created_at AS createdAt
+        FROM `match`
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="selectById" resultType="com.wtt.demo.pojo.Match">
+        SELECT id, player1_id AS player1Id, player2_id AS player2Id,
+               player1_name AS player1Name, player2_name AS player2Name,
+               large_score AS largeScore, small_scores AS smallScores,
+               winner_id AS winnerId, winner_name AS winnerName, created_at AS createdAt
+        FROM `match`
+        WHERE id = #{id}
+    </select>
+
+    <select id="findByPlayerId" resultType="com.wtt.demo.pojo.Match">
+        SELECT id, player1_id AS player1Id, player2_id AS player2Id,
+               player1_name AS player1Name, player2_name AS player2Name,
+               large_score AS largeScore, small_scores AS smallScores,
+               winner_id AS winnerId, winner_name AS winnerName, created_at AS createdAt
+        FROM `match`
+        WHERE player1_id = #{playerId} OR player2_id = #{playerId}
+        ORDER BY created_at DESC
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `match` (player1_id, player2_id, player1_name, player2_name,
+                            large_score, small_scores, winner_id, winner_name, created_at)
+        VALUES (#{player1Id}, #{player2Id}, #{player1Name}, #{player2Name},
+                #{largeScore}, #{smallScores}, #{winnerId}, #{winnerName}, #{createdAt})
+    </insert>
+
+    <delete id="deleteById">
+        DELETE FROM `match` WHERE id = #{id}
+    </delete>
+</mapper>
