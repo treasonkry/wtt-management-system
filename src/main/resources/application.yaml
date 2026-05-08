@@ -27,15 +27,7 @@ mybatis :
     configuration:
       map-underscore-to-camel-case: true
 
-# AI模型配置
+# AI Service Configuration (Python LangChain microservice)
 ai:
-  # DeepSeek配置
-  deepseek:
-    api-url: https://api.deepseek.com/v1/chat/completions
-    api-key: ${DEEPSEEK_API_KEY:}
-    model: deepseek-chat
-  
-  # Ollama本地配置
-  ollama:
-    api-url: http://localhost:11434/api/chat
-    model: qwen3:8b
+  service:
+    url: http://localhost:8000

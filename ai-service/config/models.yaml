@@ -1,0 +1,27 @@
+# Model Configuration
+# Edit this file to switch between AI providers
+
+default_model: deepseek
+
+models:
+  deepseek:
+    provider: deepseek
+    api_key: your-deepseek-api-key-here
+    model_name: deepseek-chat
+    temperature: 0.7
+    max_tokens: 2000
+
+  openai:
+    provider: openai
+    api_key: your-openai-api-key-here
+    base_url: https://api.openai.com/v1
+    model_name: gpt-4
+    temperature: 0.7
+    max_tokens: 2000
+
+  ollama:
+    provider: ollama
+    base_url: http://localhost:11434
+    model_name: llama3
+    temperature: 0.7
+    max_tokens: 2000
