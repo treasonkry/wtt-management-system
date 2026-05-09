@@ -48,9 +48,18 @@ class PlayerAnalysisChain:
             "match_history": match_history or "暂无比赛记录",
             "equipment": equipment or "未配置器材"
         }
-        
+
         chain = LLMChain(llm=self.model, prompt=self.prompt_template)
         return chain.run(input_data)
+
+    def analyze_raw(self, content: str) -> str:
+        """Analyze with raw content string."""
+        messages = [
+            SystemMessage(content="你是一位专业的乒乓球教练，拥有丰富的球员训练和比赛分析经验。请根据提供的信息给出专业、客观的分析和建议。"),
+            HumanMessage(content=content)
+        ]
+        result = self.model.invoke(messages)
+        return result.content if hasattr(result, 'content') else str(result)
 
 
 class PlayerSuggestChain:
@@ -89,9 +98,18 @@ class PlayerSuggestChain:
             "points": player_data.get("points", 0),
             "analysis": analysis or "暂无分析数据"
         }
-        
+
         chain = LLMChain(llm=self.model, prompt=self.prompt_template)
         return chain.run(input_data)
+
+    def suggest_raw(self, content: str) -> str:
+        """Suggest with raw content string."""
+        messages = [
+            SystemMessage(content="你是一位经验丰富的乒乓球战术教练，精通各种打法和战术风格。请根据提供的信息给出针对性的打法建议。"),
+            HumanMessage(content=content)
+        ]
+        result = self.model.invoke(messages)
+        return result.content if hasattr(result, 'content') else str(result)
 
 
 class ChatQueryChain:

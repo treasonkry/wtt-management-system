@@ -46,7 +46,9 @@ public class ChatController {
     }
 
     @GetMapping("/analyze/{playerId}")
-    public ResponseEntity<Map<String, Object>> analyzePlayerLevel(@PathVariable Integer playerId) {
+    public ResponseEntity<Map<String, Object>> analyzePlayerLevel(
+            @PathVariable Integer playerId,
+            @RequestParam(required = false) String model) {
         Map<String, Object> response = new HashMap<>();
         try {
             Player player = playerService.selectById(playerId);
@@ -56,7 +58,7 @@ public class ChatController {
                 return ResponseEntity.badRequest().body(response);
             }
 
-            String analysis = chatService.analyzePlayerLevel(player);
+            String analysis = chatService.analyzePlayerLevel(player, model);
             response.put("success", true);
             response.put("data", analysis);
             response.put("player", player);
@@ -71,7 +73,8 @@ public class ChatController {
     @PostMapping("/suggest/{playerId}")
     public ResponseEntity<Map<String, Object>> suggestPlayingStyle(
             @PathVariable Integer playerId,
-            @RequestParam(required = false) String style) {
+            @RequestParam(required = false) String style,
+            @RequestParam(required = false) String model) {
         Map<String, Object> response = new HashMap<>();
         try {
             Player player = playerService.selectById(playerId);
@@ -81,7 +84,7 @@ public class ChatController {
                 return ResponseEntity.badRequest().body(response);
             }
 
-            String suggestion = chatService.suggestPlayingStyle(player, style);
+            String suggestion = chatService.suggestPlayingStyle(player, style, model);
             response.put("success", true);
             response.put("data", suggestion);
             response.put("player", player);
@@ -184,7 +187,8 @@ public class ChatController {
     @PostMapping("/analyzeWithData/{playerId}")
     public ResponseEntity<Map<String, Object>> analyzeWithData(
             @PathVariable Integer playerId,
-            @RequestParam(required = false) String focus) {
+            @RequestParam(required = false) String focus,
+            @RequestParam(required = false) String model) {
         Map<String, Object> response = new HashMap<>();
         try {
             Player player = playerService.selectById(playerId);
@@ -262,7 +266,7 @@ public class ChatController {
             analysis.setOpponentAnalysis(opponentAnalyses);
 
             String aiFocus = (focus != null && !focus.trim().isEmpty()) ? focus : "comprehensive";
-            String analysisText = chatService.analyzeWithComprehensiveData(player, equipment, analysis, aiFocus);
+            String analysisText = chatService.analyzeWithComprehensiveData(player, equipment, analysis, aiFocus, model);
 
             response.put("success", true);
             response.put("data", analysisText);

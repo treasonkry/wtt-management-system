@@ -16,6 +16,9 @@ public class ChatServiceImpl implements ChatService {
     @Value("${ai.service.url:http://localhost:8000}")
     private String aiServiceUrl;
 
+    @Value("${ai.default-model:deepseek}")
+    private String defaultModel;
+
     private final OkHttpClient httpClient;
     private final Gson gson;
 
@@ -43,10 +46,12 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public String analyzePlayerLevel(Player player) {
+    public String analyzePlayerLevel(Player player, String model) {
         if (player == null) {
             return "球员信息不能为空";
         }
+
+        String effectiveModel = (model != null && !model.trim().isEmpty()) ? model : defaultModel;
 
         try {
             StringBuilder prompt = new StringBuilder();
@@ -59,7 +64,7 @@ public class ChatServiceImpl implements ChatService {
             prompt.append("3. 优势与不足\n");
             prompt.append("4. 提升建议\n");
 
-            return callAiService("/api/chat/analyze", prompt.toString(), "deepseek");
+            return callAiService("/api/chat/analyze", prompt.toString(), effectiveModel);
         } catch (Exception e) {
             e.printStackTrace();
             return "球员水平分析失败: " + e.getMessage();
@@ -67,10 +72,12 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public String suggestPlayingStyle(Player player, String style) {
+    public String suggestPlayingStyle(Player player, String style, String model) {
         if (player == null) {
             return "球员信息不能为空";
         }
+
+        String effectiveModel = (model != null && !model.trim().isEmpty()) ? model : defaultModel;
 
         try {
             StringBuilder prompt = new StringBuilder();
@@ -88,7 +95,7 @@ public class ChatServiceImpl implements ChatService {
             prompt.append("3. 战术运用建议\n");
             prompt.append("4. 装备选择建议\n");
 
-            return callAiService("/api/chat/suggest", prompt.toString(), "deepseek");
+            return callAiService("/api/chat/suggest", prompt.toString(), effectiveModel);
         } catch (Exception e) {
             e.printStackTrace();
             return "打法建议生成失败: " + e.getMessage();
@@ -96,10 +103,12 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public String analyzeWithComprehensiveData(Player player, Equipment equipment, ComprehensivePlayerAnalysis analysis, String focus) {
+    public String analyzeWithComprehensiveData(Player player, Equipment equipment, ComprehensivePlayerAnalysis analysis, String focus, String model) {
         if (player == null) {
             return "球员信息不能为空";
         }
+
+        String effectiveModel = (model != null && !model.trim().isEmpty()) ? model : defaultModel;
 
         try {
             StringBuilder prompt = new StringBuilder();
@@ -169,7 +178,7 @@ public class ChatServiceImpl implements ChatService {
                 prompt.append("6. 器材适配建议（如有器材信息）\n");
             }
 
-            return callAiService("/api/chat/analyze", prompt.toString(), "deepseek");
+            return callAiService("/api/chat/analyze", prompt.toString(), effectiveModel);
         } catch (Exception e) {
             e.printStackTrace();
             return "综合分析失败: " + e.getMessage();

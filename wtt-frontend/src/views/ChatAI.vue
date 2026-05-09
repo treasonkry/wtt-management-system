@@ -148,6 +148,14 @@
             </button>
           </div>
 
+          <div class="model-select-container">
+            <select v-model="selectedModel" class="model-select">
+              <option v-for="opt in modelOptions" :key="opt.value" :value="opt.value">
+                {{ opt.label }}
+              </option>
+            </select>
+          </div>
+
           <div class="chat-messages">
             <Transition name="fade" mode="out-in">
               <div v-if="aiMessage" class="message ai-message">
@@ -217,6 +225,12 @@ const chatInput = ref('')
 const aiMessage = ref('')
 const loading = ref(false)
 const isAdmin = ref(false)
+const selectedModel = ref('deepseek')
+const modelOptions = [
+  { label: 'DeepSeek', value: 'deepseek' },
+  { label: 'OpenAI GPT-4', value: 'openai' },
+  { label: 'Ollama Llama3', value: 'ollama' }
+]
 
 onMounted(async () => {
   const userStr = sessionStorage.getItem('user')
@@ -251,9 +265,9 @@ const getAnalysis = async () => {
   try {
     let response
     if (tab.value === 'analyze') {
-      response = await api.analyzePlayer(selectedPlayer.value.id)
+      response = await api.analyzePlayer(selectedPlayer.value.id, selectedModel.value)
     } else {
-      response = await api.suggestStyle(selectedPlayer.value.id)
+      response = await api.suggestStyle(selectedPlayer.value.id, null, selectedModel.value)
     }
     if (response.data.success) {
       aiMessage.value = response.data.data
@@ -274,7 +288,7 @@ const sendChat = async () => {
   loading.value = true
   aiMessage.value = ''
   try {
-    const response = await api.getChatQuery(question)
+    const response = await api.getChatQuery(question, selectedModel.value)
     if (response.data.success) {
       aiMessage.value = response.data.data
     } else {
@@ -583,6 +597,25 @@ const logout = () => {
 .tabs button.active {
   background: var(--accent-primary);
   color: white;
+  border-color: var(--accent-primary);
+}
+
+.model-select-container {
+  margin-bottom: 20px;
+}
+
+.model-select {
+  padding: 10px 16px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.model-select:focus {
+  outline: none;
   border-color: var(--accent-primary);
 }
 

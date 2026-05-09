@@ -31,3 +31,4 @@ mybatis :
 ai:
   service:
     url: http://localhost:8000
+  default-model: deepseek

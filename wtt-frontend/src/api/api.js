@@ -55,11 +55,11 @@ export default {
   getChatQuery(content, model) {
     return apiClient.post('/api/chat/query', null, { params: { content, model } })
   },
-  analyzePlayer(playerId) {
-    return apiClient.get(`/api/chat/analyze/${playerId}`)
+  analyzePlayer(playerId, model) {
+    return apiClient.get(`/api/chat/analyze/${playerId}`, { params: { model } })
   },
-  suggestStyle(playerId, style) {
-    return apiClient.post(`/api/chat/suggest/${playerId}`, null, { params: { style } })
+  suggestStyle(playerId, style, model) {
+    return apiClient.post(`/api/chat/suggest/${playerId}`, null, { params: { style, model } })
   },
   getAllLogs() {
     return apiClient.get('/api/log/all')

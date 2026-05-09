@@ -11,20 +11,14 @@ router = APIRouter(prefix="/api/chat", tags=["chat"])
 
 class PlayerAnalyzeRequest(BaseModel):
     """Request model for player analysis."""
-    player_id: int
-    name: str
-    points: int
-    phone: Optional[str] = ""
-    match_history: Optional[str] = ""
-    equipment: Optional[str] = ""
+    content: str
+    model: Optional[str] = None
 
 
 class SuggestRequest(BaseModel):
     """Request model for style suggestion."""
-    player_id: int
-    name: str
-    points: int
-    analysis: Optional[str] = ""
+    content: str
+    model: Optional[str] = None
 
 
 class ChatQueryRequest(BaseModel):
@@ -38,16 +32,8 @@ class ChatQueryRequest(BaseModel):
 async def analyze_player(request: PlayerAnalyzeRequest):
     """Analyze player level and provide suggestions."""
     try:
-        chain = PlayerAnalysisChain()
-        result = chain.analyze(
-            player_data={
-                "name": request.name,
-                "points": request.points,
-                "phone": request.phone
-            },
-            match_history=request.match_history,
-            equipment=request.equipment
-        )
+        chain = PlayerAnalysisChain(model_name=request.model)
+        result = chain.analyze_raw(request.content)
         return {"success": True, "data": result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -57,14 +43,8 @@ async def analyze_player(request: PlayerAnalyzeRequest):
 async def suggest_style(request: SuggestRequest):
     """Suggest playing style for player."""
     try:
-        chain = PlayerSuggestChain()
-        result = chain.suggest(
-            player_data={
-                "name": request.name,
-                "points": request.points
-            },
-            analysis=request.analysis
-        )
+        chain = PlayerSuggestChain(model_name=request.model)
+        result = chain.suggest_raw(request.content)
         return {"success": True, "data": result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

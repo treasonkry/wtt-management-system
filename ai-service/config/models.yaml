@@ -3,6 +3,11 @@
 
 default_model: deepseek
 
+# 适用场景说明：
+# - deepseek: 通用对话、中文理解（默认）
+# - openai: 高精度分析、复杂推理
+# - ollama: 本地部署、低延迟
+
 models:
   deepseek:
     provider: deepseek
