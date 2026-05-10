@@ -26,6 +26,22 @@ public class ChatController {
     @Autowired
     private EquipmentService equipmentService;
 
+    @GetMapping("/models")
+    public ResponseEntity<Map<String, Object>> getModelOptions() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            ModelConfig config = ModelConfig.getDefaultConfig();
+            response.put("success", true);
+            response.put("data", config.getModels());
+            response.put("default", config.getDefaultModel());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "获取模型列表失败: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
+    }
+
     @PostMapping("/query")
     public ResponseEntity<Map<String, Object>> queryChat(
             @RequestParam String content,

@@ -150,7 +150,7 @@
 
           <div class="model-select-container">
             <select v-model="selectedModel" class="model-select">
-              <option v-for="opt in modelOptions" :key="opt.value" :value="opt.value">
+              <option v-for="opt in modelOptions" :key="opt.key" :value="opt.key">
                 {{ opt.label }}
               </option>
             </select>
@@ -226,11 +226,7 @@ const aiMessage = ref('')
 const loading = ref(false)
 const isAdmin = ref(false)
 const selectedModel = ref('deepseek')
-const modelOptions = [
-  { label: 'DeepSeek', value: 'deepseek' },
-  { label: 'OpenAI GPT-4', value: 'openai' },
-  { label: 'Ollama Llama3', value: 'ollama' }
-]
+const modelOptions = ref([])
 
 onMounted(async () => {
   const userStr = sessionStorage.getItem('user')
@@ -239,9 +235,16 @@ onMounted(async () => {
     isAdmin.value = user.type === 'admin'
   }
   try {
-    const response = await api.getAllPlayers()
-    if (response.data.success) {
-      players.value = response.data.data
+    const [playersRes, modelsRes] = await Promise.all([
+      api.getAllPlayers(),
+      api.getModelOptions()
+    ])
+    if (playersRes.data.success) {
+      players.value = playersRes.data.data
+    }
+    if (modelsRes.data.success) {
+      modelOptions.value = modelsRes.data.data
+      selectedModel.value = modelsRes.data.default || 'deepseek'
     }
     const savedPlayer = sessionStorage.getItem('analyzePlayer')
     if (savedPlayer) {

@@ -92,5 +92,8 @@ export default {
   },
   deleteMatch(id) {
     return apiClient.delete(`/api/match/${id}`)
+  },
+  getModelOptions() {
+    return apiClient.get('/api/chat/models')
   }
 }

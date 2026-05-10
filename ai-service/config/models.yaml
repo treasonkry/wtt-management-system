@@ -27,6 +27,6 @@ models:
   ollama:
     provider: ollama
     base_url: http://localhost:11434
-    model_name: llama3
+    model_name: qwen3:8b
     temperature: 0.7
     max_tokens: 2000
