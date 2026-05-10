@@ -1,8 +1,7 @@
 """Player analysis chain - LangChain chain for player analysis."""
 from typing import Optional, List
 from langchain_core.messages import HumanMessage, SystemMessage
-from langchain.chains import LLMChain
-from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate, SystemMessagePromptTemplate
+from langchain_core.prompts import ChatPromptTemplate, HumanMessagePromptTemplate, SystemMessagePromptTemplate
 
 from app.models import create_chat_model
 from app.config import load_prompt_template
@@ -49,8 +48,9 @@ class PlayerAnalysisChain:
             "equipment": equipment or "未配置器材"
         }
 
-        chain = LLMChain(llm=self.model, prompt=self.prompt_template)
-        return chain.run(input_data)
+        chain = self.prompt_template | self.model
+        result = chain.invoke(input_data)
+        return result.content if hasattr(result, 'content') else str(result)
 
     def analyze_raw(self, content: str) -> str:
         """Analyze with raw content string."""
@@ -99,8 +99,9 @@ class PlayerSuggestChain:
             "analysis": analysis or "暂无分析数据"
         }
 
-        chain = LLMChain(llm=self.model, prompt=self.prompt_template)
-        return chain.run(input_data)
+        chain = self.prompt_template | self.model
+        result = chain.invoke(input_data)
+        return result.content if hasattr(result, 'content') else str(result)
 
     def suggest_raw(self, content: str) -> str:
         """Suggest with raw content string."""
