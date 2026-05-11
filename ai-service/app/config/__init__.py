@@ -1,13 +1,13 @@
 """Configuration management for AI service."""
 import os
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Dict
 import yaml
 from pydantic import BaseModel
 from functools import lru_cache
 
 
-BASE_DIR = Path(__file__).parent.parent
+BASE_DIR = Path(__file__).parent.parent.parent
 CONFIG_FILE = BASE_DIR / "config" / "models.yaml"
 PROMPTS_DIR = BASE_DIR / "prompts"
 
@@ -23,7 +23,7 @@ class ModelConfig(BaseModel):
 
 class Config(BaseModel):
     default_model: str = "deepseek"
-    models: dict[str, ModelConfig] = {}
+    models: Dict[str, ModelConfig] = {}
 
 
 @lru_cache()
@@ -31,11 +31,18 @@ def get_config() -> Config:
     """Load and cache configuration."""
     if not CONFIG_FILE.exists():
         return Config()
-    
+
     with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
         data = yaml.safe_load(f) or {}
-    
-    return Config(**data)
+
+    models_dict = {}
+    for key, value in data.get('models', {}).items():
+        models_dict[key] = ModelConfig(**value)
+
+    return Config(
+        default_model=data.get('default_model', 'deepseek'),
+        models=models_dict
+    )
 
 
 def load_prompt_template(name: str) -> str:

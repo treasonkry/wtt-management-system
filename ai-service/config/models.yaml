@@ -1,7 +1,7 @@
 # Model Configuration
 # Edit this file to switch between AI providers
 
-default_model: deepseek
+default_model: ollama
 
 # 适用场景说明：
 # - deepseek: 通用对话、中文理解（默认）
