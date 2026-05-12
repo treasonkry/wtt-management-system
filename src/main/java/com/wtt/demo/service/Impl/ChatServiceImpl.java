@@ -2,8 +2,10 @@ package com.wtt.demo.service.Impl;
 
 import com.google.gson.Gson;
 import com.wtt.demo.pojo.*;
+import com.wtt.demo.service.ChatCacheService;
 import com.wtt.demo.service.ChatService;
 import okhttp3.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,9 @@ public class ChatServiceImpl implements ChatService {
 
     private final OkHttpClient httpClient;
     private final Gson gson;
+    
+    @Autowired(required = false)
+    private ChatCacheService chatCacheService;
 
     public ChatServiceImpl() {
         this.httpClient = new OkHttpClient.Builder()
@@ -53,6 +58,13 @@ public class ChatServiceImpl implements ChatService {
 
         String effectiveModel = (model != null && !model.trim().isEmpty()) ? model : defaultModel;
 
+        if (chatCacheService != null && player.getId() != null) {
+            String cachedResult = chatCacheService.getPlayerAnalysis(player.getId());
+            if (cachedResult != null) {
+                return cachedResult;
+            }
+        }
+
         try {
             StringBuilder prompt = new StringBuilder();
             prompt.append("请根据以下乒乓球运动员的信息进行水平分析：\n");
@@ -64,7 +76,13 @@ public class ChatServiceImpl implements ChatService {
             prompt.append("3. 优势与不足\n");
             prompt.append("4. 提升建议\n");
 
-            return callAiService("/api/chat/analyze", prompt.toString(), effectiveModel);
+            String result = callAiService("/api/chat/analyze", prompt.toString(), effectiveModel);
+            
+            if (chatCacheService != null && player.getId() != null && result != null && !result.startsWith("球员水平分析失败")) {
+                chatCacheService.setPlayerAnalysis(player.getId(), result);
+            }
+            
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
             return "球员水平分析失败: " + e.getMessage();
@@ -78,6 +96,13 @@ public class ChatServiceImpl implements ChatService {
         }
 
         String effectiveModel = (model != null && !model.trim().isEmpty()) ? model : defaultModel;
+
+        if (chatCacheService != null && player.getId() != null) {
+            String cachedResult = chatCacheService.getPlayingStyleSuggestion(player.getId(), style);
+            if (cachedResult != null) {
+                return cachedResult;
+            }
+        }
 
         try {
             StringBuilder prompt = new StringBuilder();
@@ -95,7 +120,13 @@ public class ChatServiceImpl implements ChatService {
             prompt.append("3. 战术运用建议\n");
             prompt.append("4. 装备选择建议\n");
 
-            return callAiService("/api/chat/suggest", prompt.toString(), effectiveModel);
+            String result = callAiService("/api/chat/suggest", prompt.toString(), effectiveModel);
+            
+            if (chatCacheService != null && player.getId() != null && result != null && !result.startsWith("打法建议生成失败")) {
+                chatCacheService.setPlayingStyleSuggestion(player.getId(), style, result);
+            }
+            
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
             return "打法建议生成失败: " + e.getMessage();

@@ -2,13 +2,20 @@ package com.wtt.demo.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Component;
 
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+@Component
 public class RedisUtil {
     
-    @Autowired(required = false)
-    private RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
+    
+    @Autowired
+    public RedisUtil(RedisTemplate<String, Object> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
     
     public void set(String key, Object value) {
         if (redisTemplate != null) {
@@ -46,5 +53,21 @@ public class RedisUtil {
         if (redisTemplate != null) {
             redisTemplate.expire(key, timeout, unit);
         }
+    }
+    
+    public void deleteByPattern(String pattern) {
+        if (redisTemplate != null) {
+            Set<String> keys = redisTemplate.keys(pattern);
+            if (keys != null && !keys.isEmpty()) {
+                redisTemplate.delete(keys);
+            }
+        }
+    }
+    
+    public Set<String> keys(String pattern) {
+        if (redisTemplate != null) {
+            return redisTemplate.keys(pattern);
+        }
+        return null;
     }
 }
